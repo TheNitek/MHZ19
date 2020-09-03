@@ -9,7 +9,10 @@
 #define _MHZ19
 
 #include "Arduino.h"
+
+#ifndef ESP32
 #include "SoftwareSerial.h"
+#endif
 
 enum MHZ19_UART_DATA
 {
@@ -43,10 +46,8 @@ class MHZ19
 	MHZ19();
 	MHZ19(int rx, int tx);
 	MHZ19(int pwm);
-	virtual ~MHZ19();
 
-	void begin(int rx, int tx);
-	void begin(int pwm);
+	void begin();
 	void setAutoCalibration(boolean autocalib);
 	void calibrateZero();
 	void calibrateSpan(int ppm);
@@ -74,13 +75,19 @@ class MHZ19
 	uint8_t spancalib[REQUEST_CNT] = {0xff, 0x01, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00};
 	uint8_t autocalib_on[REQUEST_CNT] = {0xff, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00};
 	uint8_t autocalib_off[REQUEST_CNT] = {0xff, 0x01, 0x79, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+#ifdef ESP32
+	HardwareSerial _mhz19_serial = Serial2;
+#else
+	SoftwareSerial _mhz19_serial;
+#endif
 	
 	// Serial Pins
 	int _rx_pin = -1;
 	int _tx_pin = -1;
 
 	// Pwm Pin
-	int _pwm_pin;
+	int _pwm_pin = -1;
 
 	// Pwm Data Flag
 	uint8_t PWM_DATA_SELECT = MHZ19_PWM_DATA::CALC_2000_PPM;

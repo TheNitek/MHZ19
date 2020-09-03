@@ -13,7 +13,7 @@ License MIT
 * Include this library to your Arduino IDE.
 * Wiring MH-Z19 sensor to your Arduino or ESP-WROOM-02/32(ESP8266/ESP32).
 
-    MH-Z19 Vout to Arduino Vout(5V)  
+    MH-Z19 Vin to Arduino Vout(5V)  
     MH-Z19 GND  to Arduino GND  
     MH-Z19 Tx   to Arduino Digital Pin (Serial Rx pin)  
     MH-Z19 Rx   to Arduino Digital Pin (Serial Tx pin)  

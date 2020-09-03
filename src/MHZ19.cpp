@@ -17,27 +17,25 @@ MHZ19::MHZ19()
 {
 }
 
+#ifndef ESP32
 MHZ19::MHZ19(int rx, int tx)
 {
-	begin(rx, tx);
-}
+	_mhz19_serial = SoftwareSerial(_rx_pin, _tx_pin);
+	_mhz19_serial.begin(9600);
 
-MHZ19::MHZ19(int pwm){
-	begin(pwm);
-}
-
-MHZ19::~MHZ19()
-{
-}
-
-void MHZ19::begin(int rx, int tx)
-{
 	_rx_pin = rx;
 	_tx_pin = tx;
 }
+#endif
 
-void MHZ19::begin(int pwm){
+MHZ19::MHZ19(int pwm){
 	_pwm_pin = pwm;
+}
+
+void MHZ19::begin() {
+	if(_pwm_pin < 0) {
+		_mhz19_serial.begin(9600);
+	}
 }
 
 void MHZ19::setAutoCalibration(boolean autocalib)
@@ -86,16 +84,14 @@ void MHZ19::writeCommand(uint8_t cmd[])
 
 void MHZ19::writeCommand(uint8_t cmd[], uint8_t *response)
 {
-	SoftwareSerial mhz19_serial(_rx_pin, _tx_pin);
-	mhz19_serial.begin(9600);
-	mhz19_serial.write(cmd, REQUEST_CNT);
-	mhz19_serial.write(mhz19_checksum(cmd));
-	mhz19_serial.flush();
+	_mhz19_serial.write(cmd, REQUEST_CNT);
+	_mhz19_serial.write(mhz19_checksum(cmd));
+	_mhz19_serial.flush();
 
 	if (response != NULL)
 	{
 		int i = 0;
-		while (mhz19_serial.available() <= 0)
+		while (_mhz19_serial.available() <= 0)
 		{
 			if (++i > WAIT_READ_TIMES)
 			{
@@ -105,7 +101,7 @@ void MHZ19::writeCommand(uint8_t cmd[], uint8_t *response)
 			yield();
 			delay(WAIT_READ_DELAY);
 		}
-		mhz19_serial.readBytes(response, MHZ19::RESPONSE_CNT);
+		_mhz19_serial.readBytes(response, MHZ19::RESPONSE_CNT);
 	}
 }
 
