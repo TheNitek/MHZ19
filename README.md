@@ -115,7 +115,7 @@ MHZ19 *mhz19_pwm = new MHZ19(pwmpin);
 void setup()
 {
     Serial.begin(115200);
-    mhz19_uart->begin(rx_pin, tx_pin);
+    mhz19_uart->begin();
     mhz19_uart->setAutoCalibration(false);
     while (mhz19_uart->isWarming())
     {

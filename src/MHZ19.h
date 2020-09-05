@@ -34,9 +34,9 @@ enum MHZ19_POTOCOL
 };
 
 typedef struct measurement {
-	int co2_ppm;
-	int temperature;
-	int state;
+	uint16_t co2_ppm;
+	int8_t temperature;
+	uint8_t state;
 } measurement_t;
 
 
